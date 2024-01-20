@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Carbon\Carbon;
 use DB;
@@ -43,14 +43,14 @@ class AuthController extends Controller
        $msgError = null;
        $msgExito = null;
        $request->validate([
-            'name' => 'required|string',
+            'username' => 'required|string',
             'password' => 'required|string',
             'remember_me' => 'boolean'
         ]);
 
         $user_name = $request->name;
 
-        $credentials = request(['name', 'password']);
+        $credentials = request(['username', 'password']);
         $msgError = 'Credenciales Erroneas';
 
         if (!Auth::attempt($credentials))        
@@ -61,11 +61,11 @@ class AuthController extends Controller
         $user = $request->user();
         $tokenResult = $user->createToken('Personal Access Token');
 
-        $user_inf = DB::select("select us.id, us.name, tu.nombre tipo_usuario
-        from users us 
-        join tbl_niveles_usuario nu on us.id = nu.id
-        join cat_tipo_usuario tu on nu.id_tipo_usuario = tu.id
-        where us.name = :name", [ 'name'=> $user_name]);
+        // $user_inf = DB::select("select us.id, us.name, tu.nombre tipo_usuario
+        // from users us 
+        // join tbl_niveles_usuario nu on us.id = nu.id
+        // join cat_tipo_usuario tu on nu.id_tipo_usuario = tu.id
+        // where us.username = :username", [ 'username'=> $user_name]);
 
         $token = $tokenResult->token;
         if ($request->remember_me)
@@ -79,7 +79,7 @@ class AuthController extends Controller
             'token_type' => 'Bearer',
             'expires_at' => Carbon::parse($token->expires_at)->toDateTimeString(),
             "mensage"=>"Task end",
-            "user_inf"=>$user_inf,
+            //"user_inf"=>$user_inf,
             "msgExito"=> $msgExito
         ]);
     }
