@@ -20,19 +20,48 @@ class AuthController extends Controller
     {
         $request->validate([
             'name' => 'required|string',
-            'email' => 'required|string|email|unique:users',
+            'username' => 'required|string',
+            'email' => 'required|string',
             'password' => 'required|string'
         ]);
 
+        $name = $request['name'];
+        $username = $request['username'];
+        $email = $request['email'];
+        $password = $request['password'];
+
+        $verificar_cuenta = collect(\DB::select("WITH cuenta as (
+                select :username username, :email email
+            )
+            select c.username, c.email,
+            case 
+                when u.username = c.username or u.email = c.email then false
+                else true end registrar,
+            case 
+                when u.username = c.username then 'El nombre de usuario ya existe.'
+                when u.email = c.email then 'El correo ingresado ya existe.'
+                else null end mensaje
+            from users u
+            right join cuenta c on u.username = c.username or u.email = c.email",
+            ["username" => $username, "email" => $email]))->first();
+
+        if(!$verificar_cuenta->registrar){
+            return response()->json([
+                'message' => $verificar_cuenta->mensaje
+            ], 401);
+        }
+
         User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password)
+            'name' => $name,
+            'username' => $username,
+            'email' => $email,
+            'password' => bcrypt($password),
+            'forzar_cambio_contrasenia' => 'true'
         ]);
 
         return response()->json([
-            'message' => 'Successfully created user!'
-        ], 201);
+            'message' => 'Usuario registrado exitosamente.'
+        ]);
     }
 
     /**
@@ -48,9 +77,11 @@ class AuthController extends Controller
             'remember_me' => 'boolean'
         ]);
 
-        $user_name = $request->name;
+        $username = $request['username'];
+        $password = $request['password'];
+        $fieldType = filter_var($username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        $credentials = request(['username', 'password']);
+        $credentials = [$fieldType => $username, "password" => $password];
         $msgError = 'Credenciales Erroneas';
 
         if (!Auth::attempt($credentials))        
