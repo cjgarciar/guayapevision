@@ -29,5 +29,7 @@ Route::group([
     ], function() {
         Route::get('logout', 'App\Http\Controllers\AuthController@logout');
         Route::get('user', 'App\Http\Controllers\AuthController@user');
+        Route::post('guardar_equipos', 'App\Http\Controllers\EquiposController@guardar_equipos');
+
     });
 });
