@@ -72,12 +72,12 @@ class AuthController extends Controller
        $msgError = null;
        $msgExito = null;
        $request->validate([
-            'username' => 'required|string',
+            'email' => 'required|string',
             'password' => 'required|string',
             'remember_me' => 'boolean'
         ]);
 
-        $username = $request['username'];
+        $username = $request['email'];
         $password = $request['password'];
         $fieldType = filter_var($username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
@@ -86,7 +86,14 @@ class AuthController extends Controller
 
         if (!Auth::attempt($credentials))        
             return response()->json([
-                'msgError' => $msgError
+                  'message' => 'Unauthorized',
+                'name'=>'',                
+                'token' => '',
+                'id_rol'=>0,
+                'username'=>''              
+                                
+                //'access_token'=>''
+                
             ], 401);
 
         $user = $request->user();
@@ -106,12 +113,15 @@ class AuthController extends Controller
         $msgExito = 'Credenciales Correctas, Bienvenido';
 
         return response()->json([
-            'access_token' => $tokenResult->accessToken,
-            'token_type' => 'Bearer',
-            'expires_at' => Carbon::parse($token->expires_at)->toDateTimeString(),
-            "mensage"=>"Task end",
-            //"user_inf"=>$user_inf,
-            "msgExito"=> $msgExito
+             'message' => 'Authorized',
+            'name'=>Auth::user()->name,
+            //'email'=>Auth::user()->email,
+            'username'=>Auth::user()->username,
+            'id_rol'=>Auth::user()->id_rol,
+            'token' => 'Bearer '.$tokenResult->accessToken,
+            //'access_token' => $tokenResult->accessToken
+            //'token_type' => 'Bearer',
+            //'expires_at' => Carbon::parse($tokenResult->token->expires_at)->toDateTimeString()
         ]);
     }
 
