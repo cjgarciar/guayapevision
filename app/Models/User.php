@@ -22,6 +22,7 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
+        'telefono',
         'forzar_cambio_contrasenia',
     ];
 
