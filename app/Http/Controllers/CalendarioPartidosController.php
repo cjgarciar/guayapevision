@@ -15,8 +15,8 @@ class CalendarioPartidosController extends Controller
             to_char(cp.fecha_hora_inicio, 'DD/MM/YYYY HH:MI AM') fecha_hora_inicio_formato, to_char(cp.fecha_hora_fin, 'DD/MM/YYYY HH:MI AM') fecha_hora_fin_formato,
             cp.created_at fecha_registro, to_char(cp.created_at, 'DD/MM/YYYY HH:MI AM') fecha_registro_formato
             from calendario_partidos cp
-            join equipos e ON cp.id_equipo = e.id 
-            join equipos e2 ON cp.id_equipo_2 = e2.id
+            join equipos e ON cp.id_equipo = e.id and e.deleted_at is null
+            join equipos e2 ON cp.id_equipo_2 = e2.id and e2.deleted_at is null
             where cp.deleted_at is null
             order by cp.fecha_hora_inicio");
 

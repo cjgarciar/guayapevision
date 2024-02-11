@@ -22,13 +22,15 @@ class AuthController extends Controller
             'name' => 'required|string',
             'username' => 'required|string',
             'email' => 'required|string',
-            'password' => 'required|string'
+            'password' => 'required|string',
+            'telefono' => 'required|string'
         ]);
 
         $name = $request['name'];
         $username = $request['username'];
         $email = $request['email'];
         $password = $request['password'];
+        $telefono = $request['telefono'];
 
         $verificar_cuenta = collect(\DB::select("WITH cuenta as (
                 select :username username, :email email
@@ -56,6 +58,7 @@ class AuthController extends Controller
             'username' => $username,
             'email' => $email,
             'password' => bcrypt($password),
+            'telefono' => $telefono,
             'forzar_cambio_contrasenia' => 'true'
         ]);
 
