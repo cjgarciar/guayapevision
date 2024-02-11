@@ -10,7 +10,7 @@ class EquiposController extends Controller
 {
     public function ver_equipos(){
 
-        $quipos = DB::SELECT("
+        $equipos = DB::SELECT("
             select id, nombre, descripcion from equipos 
             where deleted_at is null
             order by nombre
