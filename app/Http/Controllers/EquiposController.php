@@ -17,7 +17,7 @@ class EquiposController extends Controller
         ");
 
         return response()->json([
-            'message' => $msgSuccess, 'equipos'=> $equipos
+            'message' => 'Equipos Cargados Con Exito', 'equipos'=> $equipos
         ]);
     }
 
