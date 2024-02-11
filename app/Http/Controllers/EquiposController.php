@@ -8,6 +8,19 @@ use Exception;
 
 class EquiposController extends Controller
 {
+    public function ver_equipos(){
+
+        $quipos = DB::SELECT("
+            select id, nombre, descripcion from equipos 
+            where deleted_at is null
+            order by nombre
+        ");
+
+        return response()->json([
+            'message' => $msgSuccess, 'equipos'=> $equipos
+        ]);
+    }
+
     public function guardar_equipos(Request $request){
         $id = $request->id;
         $nombre = $request->nombre;
