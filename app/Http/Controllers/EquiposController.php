@@ -2,9 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
+use App\Providers\RouteServiceProvider;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use Carbon\Carbon;
 use DB;
 use Exception;
+
 
 class EquiposController extends Controller
 {
@@ -17,7 +24,7 @@ class EquiposController extends Controller
         ");
 
         return response()->json([
-            'message' => 'Equipos Cargados Con Exito', 'equipos'=> $equipos
+            'mensaje' => 'Equipos Cargados Con Exito', 'equipos'=> $equipos
         ]);
     }
 
@@ -81,7 +88,9 @@ class EquiposController extends Controller
         }
 
         return response()->json([
-            'message' => $msgSuccess
+            'mensaje' => $msgSuccess,
+            'error' => $msgError,
+            'estatus'=>true
         ]);
     }
 
