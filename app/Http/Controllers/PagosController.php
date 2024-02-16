@@ -62,6 +62,12 @@ class PagosController extends Controller
 
             $bloqueo = empty($pago);
 
+            if ($pago) {
+                $bloqueo = false;
+            }else{
+                $bloqueo = true;
+            }
+
         }else{
             $bloqueo = false;
         }
