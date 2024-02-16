@@ -2,7 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
+use App\Providers\RouteServiceProvider;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use Carbon\Carbon;
 use DB;
 use Exception;
 
@@ -27,9 +33,46 @@ class PagosController extends Controller
 
 
         return response()->json([
-            'message' => 'Pagos Cargados Con Exito!',
+            'mensaje' => 'Pagos cargados con exito!',
+            'estatus'=>true,
             'pagos' => $pagos
         ]);
+    }
+
+    public function bloqueo_partido(){
+
+        $id_user = Auth::user()->id;
+        
+        $id_calendario_partido = COLLECT(DB::SELECT("
+            SELECT ID FROM CALENDARIO_PARTIDOS
+            WHERE NOW() BETWEEN FECHA_HORA_INICIO AND FECHA_HORA_FIN
+            AND DELETED_AT IS NULL
+        "))->first();
+
+        $id_calendario_partido = $id_calendario_partido->id;
+
+        if ($id_calendario_partido) {
+            $pago = DB::SELECT("
+                SELECT ID_USER FROM PAGOS_PARTIDOS 
+                WHERE ID_CALENDARIO_PARTIDO = :id_calendario_partido
+                and id_user = :id_user
+                and deleted_at is null
+            ", ['id_calendario_partido' =>$id_calendario_partido, 'id_user' =>$id_user]);
+
+
+            $bloqueo = empty($pago);
+
+        }else{
+            $bloqueo = false;
+        }
+
+        return response()->json([
+            'mensaje' => 'ok',
+            'bloquear'=> $bloqueo,
+            'estatus'=>true
+            
+        ]);
+
     }
 
     public function guardar_pagos(Request $request){
@@ -93,7 +136,9 @@ class PagosController extends Controller
         }
 
         return response()->json([
-            'message' => $msgSuccess
+            'mensaje' => $msgSuccess,
+            'error' => $msgError,
+            'estatus'=>true
         ]);
     }
 }
