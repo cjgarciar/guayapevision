@@ -60,7 +60,7 @@ class PagosController extends Controller
             ", ['id_calendario_partido' =>$id_calendario_partido, 'id_user' =>$id_user]);
 
 
-            $bloqueo = empty($pago);
+            //$bloqueo = empty($pago);
 
             if ($pago) {
                 $bloqueo = false;
