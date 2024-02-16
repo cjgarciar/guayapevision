@@ -54,3 +54,24 @@ CREATE TABLE IF NOT EXISTS PAGOS_PARTIDOS(
 );
 
 
+CREATE TABLE IF NOT EXISTS tbl_cuenta_paypal(
+	id SERIAL not null primary key,
+	email text,
+	clientId text,
+	secretKey text,	
+	CREATED_AT TIMESTAMP WITHOUT TIME ZONE,
+	UPDATED_AT TIMESTAMP WITHOUT TIME ZONE,
+	DELETED_AT TIMESTAMP WITHOUT TIME ZONE	
+);
+
+
+drop table public.tbl_productos;
+drop table public.tbl_inventario;
+drop table public.tbl_cuadrillas_empleados;
+drop table public.tbl_cuadrillas;
+drop table public.tbl_asignaciones_tipo_empleado;
+drop table public.tbl_asignaciones_inventario;
+drop table public.ran_facturas;
+drop table public.facturas;
+drop table public.cat_unidades_medida;
+drop table public.cat_sucursales;

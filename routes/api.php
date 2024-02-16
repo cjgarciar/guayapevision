@@ -37,3 +37,5 @@ Route::group([
         Route::post('guardar_pagos', 'App\Http\Controllers\PagosController@guardar_pagos');
     });
 });
+
+Route::get('/calendario/equipos', 'App\Http\Controllers\EquiposController@ver_calendario_equipos');
