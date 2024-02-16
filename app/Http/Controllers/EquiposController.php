@@ -93,6 +93,37 @@ class EquiposController extends Controller
             'estatus'=>true
         ]);
     }
+
+
+    public function ver_calendario_equipos(Request $request){        
+        $calendario_partidos = null;
+        $accion = $request->accion;
+        $msgError = null;
+        $msgSuccess = null;
+
+        try {
+
+            $calendario_partidos = DB::SELECT("select cp.id, cp.id_equipo, e.nombre as equipo, cp.id_equipo_2, e2.nombre as equipo_2,
+            e.nombre||' vr '||e2.nombre encuentro,
+            cp.precio, cp.fecha_hora_inicio, cp.fecha_hora_fin, pp.id_user,
+            case when pp.id_calendario_partido is not null then true else false end as pago_partido
+            from public.calendario_partidos cp
+            join equipos e on e.id = cp.id_equipo
+            join equipos e2 on e2.id = cp.id_equipo_2
+            left join public.pagos_partidos pp on pp.id_calendario_partido = cp.id
+            where cp.deleted_at is null
+            and cp.fecha_hora_inicio::date >= current_date");
+
+            $msgSuccess = "Equipo guardado con exito";
+
+        } catch (Exception $e) {
+            $msgError = "Error al guardar: ".$e->getMessage();
+        }
+
+        return response()->json([
+            'calendario_partidos' => $calendario_partidos
+        ]);
+    }
 }
 
 
