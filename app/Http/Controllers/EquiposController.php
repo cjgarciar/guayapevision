@@ -104,6 +104,7 @@ class EquiposController extends Controller
         try {
 
             $calendario_partidos = DB::SELECT("select cp.id, cp.id_equipo, e.nombre as equipo, cp.id_equipo_2, e2.nombre as equipo_2,
+            e.nombre||' vr '||e2.nombre encuentro,
             cp.precio, cp.fecha_hora_inicio, cp.fecha_hora_fin, pp.id_user,
             case when pp.id_calendario_partido is not null then true else false end as pago_partido
             from public.calendario_partidos cp
