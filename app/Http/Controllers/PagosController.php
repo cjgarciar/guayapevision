@@ -49,7 +49,7 @@ class PagosController extends Controller
             AND DELETED_AT IS NULL
         "))->first();
 
-        $id_calendario_partido = $id_calendario_partido->id;
+        $id_calendario_partido = isset($id_calendario_partido->id)?$id_calendario_partido->id:null;
 
         if ($id_calendario_partido) {
             $pago = DB::SELECT("
