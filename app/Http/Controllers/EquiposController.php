@@ -100,19 +100,29 @@ class EquiposController extends Controller
         $accion = $request->accion;
         $msgError = null;
         $msgSuccess = null;
+        $id_user = Auth::user()->id;
+        //$id_user = 1;
 
         try {
 
             $calendario_partidos = DB::SELECT("select cp.id, cp.id_equipo, e.nombre as equipo, cp.id_equipo_2, e2.nombre as equipo_2,
             e.nombre||' vr '||e2.nombre encuentro,
-            cp.precio, cp.fecha_hora_inicio, cp.fecha_hora_fin, pp.id_user,
-            case when pp.id_calendario_partido is not null then true else false end as pago_partido
+            cp.precio, to_char(cp.fecha_hora_inicio, 'DD/MM/YYYY HH:MI AM') fecha_hora_inicio,
+            to_char(cp.fecha_hora_fin, 'DD/MM/YYYY HH:MI AM') fecha_hora_fin, pp.id_user,
+            case when pp.id_calendario_partido is not null then true else false end as pago_partido,
+            tcp.clientid, tcp.secretkey
             from public.calendario_partidos cp
             join equipos e on e.id = cp.id_equipo
             join equipos e2 on e2.id = cp.id_equipo_2
-            left join public.pagos_partidos pp on pp.id_calendario_partido = cp.id
+            left join public.pagos_partidos pp on pp.id_calendario_partido = cp.id and pp.id_user = :id_user and pp.deleted_at is null
+            join public.tbl_cuenta_paypal tcp on true
             where cp.deleted_at is null
-            and cp.fecha_hora_inicio::date >= current_date");
+            and cp.fecha_hora_inicio::date >= current_date
+            and pp.deleted_at is null
+            ",
+        [
+            'id_user'=>$id_user
+        ]);
 
             $msgSuccess = "Equipo guardado con exito";
 

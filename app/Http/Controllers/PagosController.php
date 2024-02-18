@@ -84,11 +84,13 @@ class PagosController extends Controller
     public function guardar_pagos(Request $request){
         $id = $request->id;
         $id_user = Auth::user()->id;
+        //$id_user = isset(Auth::user()->id) ? Auth::user()->id : 1;
         $id_calendario_partido = $request->id_calendario_partido;
         $accion = $request->accion;
         $username = $request->username;
         $msgError = null;
         $msgSuccess = null;
+        $statusCode = null;
 
         if ($id == null && $accion == 2) {
             $accion = 1;
@@ -99,8 +101,9 @@ class PagosController extends Controller
             if ($accion == 1) {
                
                $insert_pagos_partidos = DB::SELECT("
-                INSERT INTO pagos_partidos(id_user, id_calendario_partido) values (:nombre, :descripcion) 
-                RETURNING  id
+                INSERT INTO pagos_partidos(id_user, id_calendario_partido) 
+                values (:id_user, :id_calendario_partido) 
+                RETURNING id
                 ", ["id_user"=>$id_user, "id_calendario_partido"=>$id_calendario_partido]);
 
                 foreach ($insert_pagos_partidos as $r) {
@@ -108,7 +111,7 @@ class PagosController extends Controller
                 }
 
                 $msgSuccess = "Pago Realizado Con Exito!";
-
+                $statusCode = 201;
             } /*else if ($accion == 2) {
 
                 $sql_turnos = DB::select(
@@ -123,8 +126,7 @@ class PagosController extends Controller
             }*/ else if ($accion == 3) {
 
                 $sql_turnos = DB::select(
-                    "update pagos_partidos set deleted_at=now() where 
-                     id=:id 
+                    "update pagos_partidos set deleted_at=now() where id=:id 
                     ",
                     ['id' => $id]
                 );
@@ -133,6 +135,7 @@ class PagosController extends Controller
 
             } else {
                 $msgError = "Accion invalida";
+                $statusCode = 101;
             }
 
             
@@ -144,7 +147,8 @@ class PagosController extends Controller
         return response()->json([
             'mensaje' => $msgSuccess,
             'error' => $msgError,
-            'estatus'=>true
+            'estatus'=>true,
+            'statusCode'=>$statusCode,
         ]);
     }
 }
