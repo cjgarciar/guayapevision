@@ -45,7 +45,7 @@ class PagosController extends Controller
         
         $id_calendario_partido = COLLECT(DB::SELECT("
             SELECT ID FROM CALENDARIO_PARTIDOS
-            WHERE NOW() BETWEEN FECHA_HORA_INICIO AND FECHA_HORA_FIN
+            WHERE (now() at time zone 'CST') BETWEEN FECHA_HORA_INICIO AND FECHA_HORA_FIN
             AND DELETED_AT IS NULL
         "))->first();
 
@@ -101,8 +101,8 @@ class PagosController extends Controller
             if ($accion == 1) {
                
                $insert_pagos_partidos = DB::SELECT("
-                INSERT INTO pagos_partidos(id_user, id_calendario_partido) 
-                values (:id_user, :id_calendario_partido) 
+                INSERT INTO pagos_partidos(id_user, id_calendario_partido, created_at) 
+                values (:id_user, :id_calendario_partido, (now() at time zone 'CST')) 
                 RETURNING id
                 ", ["id_user"=>$id_user, "id_calendario_partido"=>$id_calendario_partido]);
 
