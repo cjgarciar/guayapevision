@@ -17,15 +17,15 @@ class EquiposController extends Controller
 {
     public function ver_equipos(){
 
-        $equipos = DB::SELECT("
-            select id, nombre, descripcion from equipos 
+        $equipos = DB::SELECT('
+            select id, nombre title, 1 "userId"  from equipos 
             where deleted_at is null
             order by nombre
-        ");
+        ');
 
-        return response()->json([
-            'mensaje' => 'Equipos Cargados Con Exito', 'equipos'=> $equipos
-        ]);
+        return response()->json(
+              $equipos
+        );
     }
 
     public function guardar_equipos(Request $request){

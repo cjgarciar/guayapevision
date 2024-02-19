@@ -28,30 +28,40 @@ class CalendarioPartidosController extends Controller
 
     public function guardar_calendario_partidos(Request $request){
         $id = $request->id;
-        $equipo = $request->equipo;
-        $equipo_2 = $request->equipo_2;
+        $equipo = $request->idEquipo;
+        $equipo_2 = $request->idEquipo2;
         $precio = $request->precio;
-        $fecha_hora_inicio = $request->fecha_hora_inicio;
-        $fecha_hora_fin = $request->fecha_hora_fin;
-        $accion = $request->accion;
-        $msgError = null;
-        $msgSuccess = null;
+        $fecha = $request->fecha;
+        $hora = $request->hora;
+        $fecha_hora_inicio = $fecha." ".$hora;
+        $accion=$request->accion;
+        $msgError = '';
+        $msgSuccess = '';
         $estatus = false;
+
+        $hora_fin = collect(\DB::select("select (:hora::interval+'02:30:00'::interval) hora",['hora' => $hora,]))->first();
+        $horaFin = isset($hora_fin->hora)?$hora_fin->hora:null;
+
+        $fecha_hora_fin = $fecha." ".$horaFin;
+       
 
         if ($id == null && $accion == 2) {
             $accion = 1;
         }
+
+        //throw new Exception($fecha_hora_fin);
+        
 
         try {
 
             if ($accion == 1) {
                $calendario_partido = collect(\DB::select("INSERT INTO public.calendario_partidos(
                     id_equipo, id_equipo_2, precio, fecha_hora_inicio, fecha_hora_fin)
-                    VALUES (:equipo, :equipo_2, :precio, :fecha_hora_inicio, :fecha_hora_fin)",
+                    VALUES (:equipo::int, :equipo_2::int, :precio::numeric, :fecha_hora_inicio::timestamp, :fecha_hora_fin::timestamp)",
                     ["equipo" => $equipo, "equipo_2" => $equipo_2, "precio" => $precio, 
                     "fecha_hora_inicio" => $fecha_hora_inicio, "fecha_hora_fin" => $fecha_hora_fin]))->first();
 
-                $msgSuccess = "Partido registrado exitosamente.";
+                $msgSuccess = "Authorized";
                 $estatus = true;
             } else if ($accion == 2) {
                 DB::select("UPDATE public.calendario_partidos
@@ -81,7 +91,7 @@ class CalendarioPartidosController extends Controller
 
         return response()->json([
             'estatus' => $estatus,
-            'msgSuccess' => $msgSuccess,
+            'message' => $msgSuccess,
             'msgError' => $msgError
         ]);
     }
