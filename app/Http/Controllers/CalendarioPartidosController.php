@@ -32,14 +32,21 @@ class CalendarioPartidosController extends Controller
         $equipo_2 = $request->idEquipo2;
         $precio = $request->precio;
         $fecha = $request->fecha;
-        $hora = $request->hora;
-        $fecha_hora_inicio = $fecha." ".$hora;
+        $hora = $request->hora;        
         $accion=$request->accion;
         $msgError = '';
         $msgSuccess = '';
         $estatus = false;
 
-        $hora_fin = collect(\DB::select("select (:hora::interval+'02:30:00'::interval) hora",['hora' => $hora,]))->first();
+
+        $hora_inicio = collect(\DB::select("SELECT to_char(:hora::timestamp, 'HH24:MI') hora",['hora' => $hora,]))->first();
+        $horaInicio = isset($hora_inicio->hora)?$hora_inicio->hora:null;
+
+
+
+        $fecha_hora_inicio = $fecha." ".$horaInicio;
+
+        $hora_fin = collect(\DB::select("select (:horaInicio::interval+'02:30:00'::interval) hora",['horaInicio' => $horaInicio,]))->first();
         $horaFin = isset($hora_fin->hora)?$hora_fin->hora:null;
 
         $fecha_hora_fin = $fecha." ".$horaFin;
@@ -49,7 +56,7 @@ class CalendarioPartidosController extends Controller
             $accion = 1;
         }
 
-        //throw new Exception($fecha_hora_fin);
+        //throw new Exception($fecha_hora_inicio);
         
 
         try {
@@ -90,9 +97,9 @@ class CalendarioPartidosController extends Controller
         }
 
         return response()->json([
-            'estatus' => $estatus,
+            //'estatus' => $estatus,
             'message' => $msgSuccess,
-            'msgError' => $msgError
+            //'msgError' => $msgError
         ]);
     }
 }
