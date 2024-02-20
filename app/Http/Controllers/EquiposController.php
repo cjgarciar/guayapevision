@@ -100,8 +100,8 @@ class EquiposController extends Controller
         $accion = $request->accion;
         $msgError = null;
         $msgSuccess = null;
-        //$id_user = Auth::user()->id;
-        $id_user = 1;
+        $id_user = Auth::user()->id;
+        //$id_user = 1;
 
         try {
 
