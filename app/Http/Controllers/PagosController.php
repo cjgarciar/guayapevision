@@ -87,7 +87,7 @@ class PagosController extends Controller
         //$id_user = isset(Auth::user()->id) ? Auth::user()->id : 1;
         $id_calendario_partido = $request->id_calendario_partido;
         $accion = $request->accion;
-        $username = $request->username;
+        //$username = $request->username;
         $msgError = null;
         $msgSuccess = null;
         $statusCode = null;
@@ -102,7 +102,7 @@ class PagosController extends Controller
                
                $insert_pagos_partidos = DB::SELECT("
                 INSERT INTO pagos_partidos(id_user, id_calendario_partido, created_at) 
-                values (:id_user, :id_calendario_partido, (now() at time zone 'CST')) 
+                values (:id_user, :id_calendario_partido::int, (now() at time zone 'CST')) 
                 RETURNING id
                 ", ["id_user"=>$id_user, "id_calendario_partido"=>$id_calendario_partido]);
 
@@ -145,10 +145,17 @@ class PagosController extends Controller
         }
 
         return response()->json([
-            'mensaje' => $msgSuccess,
+            /*'mensaje' => $msgSuccess,
             'error' => $msgError,
-            'estatus'=>true,
+            'estatus'=>true,*/
             'statusCode'=>$statusCode,
+            'id' => 0,
+            'precio' => '0',
+            'encuentro' => '',
+            'fecha_hora_inicio' => '',
+            'pago_partido' => false,
+            'clientid' => '',
+            'secretkey' => ''
         ]);
     }
 }
