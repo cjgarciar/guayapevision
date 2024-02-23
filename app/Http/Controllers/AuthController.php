@@ -59,7 +59,8 @@ class AuthController extends Controller
             'email' => $email,
             'password' => bcrypt($password),
             'telefono' => $telefono,
-            'forzar_cambio_contrasenia' => 'true'
+            'forzar_cambio_contrasenia' => 'true',
+            'id_rol' => 2
         ]);
 
         return response()->json([
