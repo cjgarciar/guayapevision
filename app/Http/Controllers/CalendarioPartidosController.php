@@ -99,7 +99,7 @@ class CalendarioPartidosController extends Controller
         return response()->json([
             //'estatus' => $estatus,
             'message' => $msgSuccess,
-            //'msgError' => $msgError
+            'msgError' => $msgError
         ]);
     }
 }

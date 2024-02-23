@@ -36,7 +36,7 @@ Route::group([
         Route::get('ver_pagos', 'App\Http\Controllers\PagosController@ver_pagos');
         Route::post('guardar_pagos', 'App\Http\Controllers\PagosController@guardar_pagos');
         Route::post('bloqueo_partido', 'App\Http\Controllers\PagosController@bloqueo_partido');
-        Route::get('/calendario/equipos', 'App\Http\Controllers\EquiposController@ver_calendario_equipos');
+        Route::post('/calendario/equipos', 'App\Http\Controllers\EquiposController@ver_calendario_equipos');
     });
 });
 
