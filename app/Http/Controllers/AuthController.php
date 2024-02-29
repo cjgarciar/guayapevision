@@ -148,4 +148,28 @@ class AuthController extends Controller
     {
         return response()->json($request->user());
     }
+
+
+     public function mensaje(){
+        $message='';
+        $mensaje = $request['mensaje'];
+
+       try {
+
+            DB::SELECT('insert into mensajes (mensaje) values (:mensaje)',['mensaje'=>$mensaje]);
+
+            $message='Authorized';
+
+         } catch (Exception $e) {
+            $msgError = "Error al guardar: ".$e->getMessage();
+            $estatus = false;
+            $message=$msgError;
+        }
+
+       return response()->json([
+             'message' => $message,          
+        ]);
+    }
+
+    
 }
