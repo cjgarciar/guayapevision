@@ -153,10 +153,11 @@ class AuthController extends Controller
      public function mensaje(){
         $message='';
         $mensaje = $request['mensaje'];
+        $usuario = Auth::user()->username;  
 
        try {
 
-            DB::SELECT('insert into mensajes (mensaje) values (:mensaje)',['mensaje'=>$mensaje]);
+            DB::SELECT('insert into mensajes (mensaje,usuario) values (:mensaje,:usuario)',['mensaje'=>$mensaje,'usuario'=>$usuario]);
 
             $message='Authorized';
 
@@ -171,5 +172,5 @@ class AuthController extends Controller
         ]);
     }
 
-    
+
 }
