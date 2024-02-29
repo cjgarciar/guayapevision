@@ -26,6 +26,7 @@ use App\Http\Controllers\DslamController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index']);
+Route::get('/politica-privacidad', [PrimeController::class, 'ver_politica_privacidad']);
 
 Auth::routes([
   'register' => false, // Registration Routes...

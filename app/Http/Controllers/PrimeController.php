@@ -36,6 +36,11 @@ public function ajaxFile(Request $request){
         }
     }
 
+    public function ver_politica_privacidad() {
+
+        return view('politicas');
+    }
+
 }
 
 
