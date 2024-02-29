@@ -150,9 +150,9 @@ class AuthController extends Controller
     }
 
 
-     public function mensaje(){
+     public function mensaje(Request $request){
         $message='';
-        $mensaje = $request['mensaje'];
+        $mensaje = $request->mensaje;
         $usuario = Auth::user()->username;  
 
        try {
