@@ -45,7 +45,7 @@ class PagosController extends Controller
         
         $id_calendario_partido = COLLECT(DB::SELECT("
             SELECT ID FROM CALENDARIO_PARTIDOS
-            WHERE (now() at time zone 'CST') BETWEEN FECHA_HORA_INICIO AND FECHA_HORA_FIN
+            WHERE (now() at time zone 'CST') BETWEEN FECHA_HORA_INICIO - interval '30 min' AND FECHA_HORA_FIN
             AND DELETED_AT IS NULL
         "))->first();
 
