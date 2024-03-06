@@ -10,7 +10,7 @@ class CalendarioPartidosController extends Controller
 {
     public function ver_calendario_partidos(Request $request){
         $estatus = true;
-        $calendario_partidos = DB::select("SELECT cp.id, e.nombre equipo, e2.nombre equipo2, cp.precio, concat('L',to_char(cp.precio,'FM999,999,999.00')) precio_formato,
+        $calendario_partidos = DB::select("SELECT cp.id, upper(e.nombre) equipo, upper(e2.nombre) equipo2, cp.precio, concat('L',to_char(cp.precio,'FM999,999,999.00')) precio_formato,
             cp.fecha_hora_inicio, cp.fecha_hora_fin,
             to_char(cp.fecha_hora_inicio, 'DD/MM/YYYY HH:MI AM') fecha_hora_inicio_formato, to_char(cp.fecha_hora_fin, 'DD/MM/YYYY HH:MI AM') fecha_hora_fin_formato,
             cp.created_at fecha_registro, to_char(cp.created_at, 'DD/MM/YYYY HH:MI AM') fecha_registro_formato

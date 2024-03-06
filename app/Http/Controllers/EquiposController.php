@@ -18,7 +18,7 @@ class EquiposController extends Controller
     public function ver_equipos(){
 
         $equipos = DB::SELECT('
-            select id, nombre title, 1 "userId"  from equipos 
+            select id, upper(nombre) title, 1 "userId"  from equipos 
             where deleted_at is null
             order by nombre
         ');
@@ -105,7 +105,7 @@ class EquiposController extends Controller
 
         try {
 
-            $calendario_partidos = DB::SELECT("select cp.id, cp.id_equipo, e.nombre as equipo, cp.id_equipo_2, e2.nombre as equipo_2,
+            $calendario_partidos = DB::SELECT("select cp.id, cp.id_equipo, upper(e.nombre) as equipo, cp.id_equipo_2, upper(e2.nombre) as equipo_2,
             e.nombre||' vr '||e2.nombre encuentro,
             cp.precio, to_char(cp.fecha_hora_inicio, 'DD/MM/YYYY HH:MI AM') fecha_hora_inicio,
             to_char(cp.fecha_hora_fin, 'DD/MM/YYYY HH:MI AM') fecha_hora_fin, pp.id_user,
