@@ -161,14 +161,23 @@ class PagosController extends Controller
 
     public function ver_enlaces_streaming(){
         
-        $sql_tbl_enlaces_streaming = DB::SELECT("select enlace_tv_vivo, enlace_radio_vivo from public.tbl_enlaces_streaming
+        $sql_enlace_tv = COLLECT(DB::SELECT("select enlace_tv_vivo from public.tbl_enlaces_streaming
         where deleted_at is null
-        ");
+        "))->first();
+        
+        $enlace_tv = isset($sql_enlace_tv->enlace_tv_vivo)?$sql_enlace_tv->enlace_tv_vivo:null;
+        
+        $sql_enlace_radio = COLLECT(DB::SELECT("select enlace_radio_vivo from public.tbl_enlaces_streaming
+        where deleted_at is null
+        "))->first();
+        
+        $enlace_radio = isset($sql_enlace_radio->enlace_radio_vivo)?$sql_enlace_radio->enlace_radio_vivo:null;
 
         return response()->json([
-            'mensaje' => 'Datos cargados con exito!',
+            'mensaje' => 'Authorized',
             'estatus'=>true,
-            'sql_tbl_enlaces_streaming' => $sql_tbl_enlaces_streaming
+            'enlaceTv' => $enlace_tv,
+            'enlaceRadio' => $enlace_radio            
         ]);
     }
     
