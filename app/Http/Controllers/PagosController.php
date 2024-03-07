@@ -158,4 +158,18 @@ class PagosController extends Controller
             'secretkey' => ''
         ]);
     }
+
+    public function ver_enlaces_streaming(){
+        
+        $sql_tbl_enlaces_streaming = DB::SELECT("select enlace_tv_vivo, enlace_radio_vivo from public.tbl_enlaces_streaming
+        where deleted_at is null
+        ");
+
+        return response()->json([
+            'mensaje' => 'Datos cargados con exito!',
+            'estatus'=>true,
+            'sql_tbl_enlaces_streaming' => $sql_tbl_enlaces_streaming
+        ]);
+    }
+    
 }
