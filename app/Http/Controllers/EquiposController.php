@@ -117,7 +117,7 @@ class EquiposController extends Controller
             left join public.pagos_partidos pp on pp.id_calendario_partido = cp.id and pp.id_user = :id_user and pp.deleted_at is null
             join public.tbl_cuenta_paypal tcp on true
             where cp.deleted_at is null
-            and cp.fecha_hora_inicio::date = (current_date at time zone 'CST')             
+            and cp.fecha_hora_inicio::date = (current_date at time zone 'CST')::date             
             ",
         [
             'id_user'=>$id_user
