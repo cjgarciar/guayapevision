@@ -5,7 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\PrimeController;
 use App\Http\Controllers\PersonasController;
-use App\Http\Controllers\DslamController;
+use App\Http\Controllers\EquiposController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,6 +46,11 @@ Route::post("/configuraciones/permisos/guardar", [EmpleadoController::class, "gu
 Route::post("/configuraciones/usuario/reinicio-clave/guardar", [EmpleadoController::class, "guardar_seg_usuario_clave_reinicio"]);
 Route::get("/configuraciones/usuario/cambio-calve", [EmpleadoController::class, "ver_users_cambio_clave"]);
 Route::post("/configuraciones/usuario/cambio-calve/guardar", [EmpleadoController::class, "guardar_users_cambio_clave"]);
+Route::get("/configuracion/equipos", [EquiposController::class, "ver_tbl_equipos"]);
+Route::post("/configuracion/equipos/guardar", [EquiposController::class, "guardar_tbl_equipos"]);
+Route::get("/configuracion/calendario/equipos", [EquiposController::class, "ver_calendario_partidos"]);
+Route::post("/configuracion/calendario/equipos/guardar", [EquiposController::class, "guardar_calendario_partidos"]);
+
 //fin empleado y permisos de usuario
 
 Route::get("/reporte/hola-mundo",[ReportesController::class, "ver_reporte_hola_mundo"]);
@@ -53,14 +58,6 @@ Route::get("/reporte/word",[ReportesController::class, "ver_reporte_word"]);
 
 Route::get("/personas", [PersonasController::class, "ver_reg_ficha_personas"]);
 Route::post("/personas/guardar", [PersonasController::class, "guardar_reg_ficha_personas"]);
-
-Route::get("/dslams-clientes", [DslamController::class, "ver_tbl_dslams_clientes"]);
-Route::post("/dslams-clientes/guardar", [DslamController::class, "guardar_tbl_dslams_clientes"]);
-
-Route::get("/dslams", [DslamController::class, "ver_tbl_dslams"]);
-Route::post("/dslams/guardar", [DslamController::class, "guardar_tbl_dslams"]);
-
-
 
 
 });

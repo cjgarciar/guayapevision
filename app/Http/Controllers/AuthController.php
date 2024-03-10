@@ -53,7 +53,7 @@ class AuthController extends Controller
             ], 401);
         }
 
-        User::create([
+        $user = User::create([
             'name' => $name,
             'username' => $username,
             'email' => $email,
@@ -61,6 +61,22 @@ class AuthController extends Controller
             'telefono' => $telefono,
             'forzar_cambio_contrasenia' => 'true',
             'id_rol' => 2
+        ]);
+
+        $userId = $user->id;
+
+        DB::table("insert into public.seg_usuario_permisos(id_usuario, permiso, created_at)
+        with persmiso as (
+            select 6 as id_permiso union all
+            select 7 as id_permiso
+        ),
+        usuarios as (
+            select id as id_usuario, p.id_permiso, (now() at time zone 'CST') created_at from users u
+            join persmiso p on true
+            where id = :userid
+        )
+        select id_usuario, id_permiso, created_at from usuarios",[
+            'userid'=>$userId
         ]);
 
         return response()->json([

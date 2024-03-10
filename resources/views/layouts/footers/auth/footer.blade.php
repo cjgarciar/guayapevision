@@ -6,7 +6,7 @@
                     © <script>
                         document.write(new Date().getFullYear())
                     </script>, derechos reservados <i class="fa fa-heart"></i> por
-                    <a href="#" class="font-weight-bold">HONDUTEL</a>&amp;
+                    <a href="#" class="font-weight-bold">GUAYAPE VISION</a>&amp;
                     
                 </div>
             </div>

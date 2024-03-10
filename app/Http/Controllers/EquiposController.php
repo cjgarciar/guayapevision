@@ -133,6 +133,190 @@ class EquiposController extends Controller
             'calendario_partidos' => $calendario_partidos
         ]);
     }
+
+    public function ver_tbl_equipos() {
+        $equipos_list = DB::select("
+        select e.id, e.nombre, e.descripcion from public.equipos e
+           where e.deleted_at is null
+           order by 1 desc 
+       "
+       );
+       return view("configuraciones.equipos")->with("equipos_list", $equipos_list)
+       ;
+       }
+       
+       public function guardar_tbl_equipos(Request $request) {
+       $id=$request->id;
+       $nombre=$request->nombre;
+       $descripcion=$request->descripcion;
+       $msgError=null;
+       $msgSuccess=null;
+       $accion=$request->accion;
+       $equipos_list=null;
+       if($id==null && $accion==2){
+                   $accion=1;
+               }
+       try{ 
+       
+       if($accion==1){
+       $sql_equipos = DB::select("insert INTO public.equipos (
+       descripcion,nombre
+       , created_at) values (
+       :descripcion,:nombre
+       , (now() at time zone 'CST') )
+       RETURNING  id
+       ", ['descripcion'=>$descripcion,'nombre'=>$nombre
+       ]
+       );
+       foreach($sql_equipos as $r){
+       $id=$r->id;
+       }
+       $msgSuccess="Registro creado con el código: ".$id;
+       }else if($accion==2){
+       $sql_equipos = DB::select("update public.equipos set  updated_at = (now() at time zone 'CST'),
+       descripcion=:descripcion,nombre=:nombre
+       where id=:id
+       "
+       , ['descripcion'=>$descripcion,'id'=>$id,'nombre'=>$nombre]
+       );
+       $msgSuccess="Registro ".$id." actualizado";
+       
+       }else if($accion==3){
+       
+       $sql_equipos = DB::select("update public.equipos set deleted_at=(now() at time zone 'CST') where
+       id=:id
+       "
+       , ['id'=>$id]
+       );
+       $msgSuccess="Registro ".$id." eliminado";
+       
+       }else if($accion==4){
+       
+       $sql_equipos = DB::select("update public.equipos set deleted_at=null where
+       id=:id
+       "
+       , ['id'=>$id]
+       );
+       $msgSuccess="Registro ".$id." eliminado";
+       
+       }else{
+                       $msgError="Accion invalida";
+                   }
+       if($msgError==null){
+        $equipos_list = DB::select("select * from (
+        select e.id, e.nombre, e.descripcion from public.equipos e
+           where e.deleted_at is null
+           order by 1 desc 
+       ) x where id=:id
+       ",[
+       "id"=>$id
+       ]);
+       }
+       }catch (Exception $e){
+                   $msgError=$e->getMessage();
+               }
+       return response()->json(["msgSuccess" => $msgSuccess,"msgError"=>$msgError, "equipos_list"=>$equipos_list]);
+       }
+
+       public function ver_calendario_partidos() {
+        $equipo_list = DB::select("select id, nombre from public.equipos where deleted_at is null");
+        $equipo_2_list = DB::select("select id, nombre from public.equipos where deleted_at is null");
+        $calendario_partidos_list = DB::select("
+        select cp.id, cp.id_equipo, e.nombre as equipo, cp.id_equipo_2, e2.nombre as equipo_2,		
+               cp.precio, cp.fecha_hora_inicio, cp.fecha_hora_fin
+               from public.calendario_partidos cp
+               join equipos e on e.id = cp.id_equipo
+               join equipos e2 on e2.id = cp.id_equipo_2
+               where cp.deleted_at is null
+           order by 1 desc 
+       "
+       );
+       return view("configuraciones.calendarioEquipos")->with("calendario_partidos_list", $calendario_partidos_list)
+       ->with("equipo_list", $equipo_list)
+       ->with("equipo_2_list", $equipo_2_list)
+       ;
+       }
+       
+       public function guardar_calendario_partidos(Request $request) {
+       $id=$request->id;
+       $id_equipo=$request->id_equipo;
+       $id_equipo_2=$request->id_equipo_2;
+       $precio=$request->precio;
+       $fecha_hora_inicio=$request->fecha_hora_inicio;
+       $fecha_hora_fin=$request->fecha_hora_fin;
+       $msgError=null;
+       $msgSuccess=null;
+       $accion=$request->accion;
+       $calendario_partidos_list=null;
+       if($id==null && $accion==2){
+                   $accion=1;
+               }
+       try{ 
+       
+       if($accion==1){
+       $sql_calendario_partidos = DB::select("insert INTO public.calendario_partidos (
+       fecha_hora_fin,fecha_hora_inicio,id_equipo,id_equipo_2,precio
+       , created_at) values (
+       :fecha_hora_fin,:fecha_hora_inicio,:id_equipo,:id_equipo_2,:precio
+       , (now() at time zone 'CST') )
+       RETURNING  id
+       ", ['fecha_hora_fin'=>$fecha_hora_fin,'fecha_hora_inicio'=>$fecha_hora_inicio,'id_equipo'=>$id_equipo,'id_equipo_2'=>$id_equipo_2,'precio'=>$precio
+       ]
+       );
+       foreach($sql_calendario_partidos as $r){
+       $id=$r->id;
+       }
+       $msgSuccess="Registro creado con el código: ".$id;
+       }else if($accion==2){
+       $sql_calendario_partidos = DB::select("update public.calendario_partidos set  updated_at = (now() at time zone 'CST'),
+       fecha_hora_fin=:fecha_hora_fin,fecha_hora_inicio=:fecha_hora_inicio,id_equipo=:id_equipo,id_equipo_2=:id_equipo_2,precio=:precio
+       where id=:id
+       "
+       , ['fecha_hora_fin'=>$fecha_hora_fin,'fecha_hora_inicio'=>$fecha_hora_inicio,'id'=>$id,'id_equipo'=>$id_equipo,'id_equipo_2'=>$id_equipo_2,'precio'=>$precio]
+       );
+       $msgSuccess="Registro ".$id." actualizado";
+       
+       }else if($accion==3){
+       
+       $sql_calendario_partidos = DB::select("update public.calendario_partidos set deleted_at=(now() at time zone 'CST') where
+       id=:id
+       "
+       , ['id'=>$id]
+       );
+       $msgSuccess="Registro ".$id." eliminado";
+       
+       }else if($accion==4){
+       
+       $sql_calendario_partidos = DB::select("update public.calendario_partidos set deleted_at=null where
+       id=:id
+       "
+       , ['id'=>$id]
+       );
+       $msgSuccess="Registro ".$id." eliminado";
+       
+       }else{
+                       $msgError="Accion invalida";
+                   }
+       if($msgError==null){
+        $calendario_partidos_list = DB::select("select * from (
+        select cp.id, cp.id_equipo, e.nombre as equipo, cp.id_equipo_2, e2.nombre as equipo_2,		
+               cp.precio, cp.fecha_hora_inicio, cp.fecha_hora_fin
+               from public.calendario_partidos cp
+               join equipos e on e.id = cp.id_equipo
+               join equipos e2 on e2.id = cp.id_equipo_2
+               where cp.deleted_at is null
+           order by 1 desc 
+       ) x where id=:id
+       ",[
+       "id"=>$id
+       ]);
+       }
+       }catch (Exception $e){
+                   $msgError=$e->getMessage();
+               }
+       return response()->json(["msgSuccess" => $msgSuccess,"msgError"=>$msgError, "calendario_partidos_list"=>$calendario_partidos_list]);
+       }
+          
 }
 
 

@@ -19,6 +19,8 @@
 <script src="{{asset('vendors/plugins/jquery-knob/jquery.knob.min.js')}}"></script>
 <!-- daterangepicker -->
 <script src="{{asset('vendors/plugins/moment/moment.min.js')}}"></script>
+<script src="{{asset('vendors/plugins/moment/moment-with-locales.js')}}"></script>
+<script src="{{asset('vendors/plugins/moment/moment-with-locales.min.js')}}"></script>
 <script src="{{asset('vendors/plugins/daterangepicker/daterangepicker.js')}}"></script>
 <!-- Tempusdominus Bootstrap 4 -->
 <script src="{{asset('vendors/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js')}}"></script>

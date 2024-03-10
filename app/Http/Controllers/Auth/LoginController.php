@@ -83,7 +83,8 @@ class LoginController extends Controller
         from users u 
         join seg_usuario_permisos up on u.id = up.id_usuario
         join seg_permisos p on up.permiso = p.id
-        join per_empleado pe on pe.id_usuario = u.id
+        left join per_empleado pe on pe.id_usuario = u.id
+        join public.roles r on r.id = u.id_rol
         where lower( u.username ) = lower( :username )
             ', [
             'username'=>$username
