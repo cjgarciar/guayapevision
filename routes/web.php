@@ -6,7 +6,7 @@ use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\PrimeController;
 use App\Http\Controllers\PersonasController;
 use App\Http\Controllers\EquiposController;
-
+use App\Http\Controllers\PagosController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -59,6 +59,10 @@ Route::get("/reporte/word",[ReportesController::class, "ver_reporte_word"]);
 Route::get("/personas", [PersonasController::class, "ver_reg_ficha_personas"]);
 Route::post("/personas/guardar", [PersonasController::class, "guardar_reg_ficha_personas"]);
 
+Route::get('create-transaction', [PagosController::class, 'createTransaction'])->name('createTransaction');
+Route::get('process-transaction/{idPartido}', [PagosController::class, 'processTransaction']);
+Route::get('success-transaction/{idPartido}', [PagosController::class, 'successTransaction'])->name('successTransaction');
+Route::get('cancel-transaction', [PagosController::class, 'cancelTransaction'])->name('cancelTransaction');
 
 });
 

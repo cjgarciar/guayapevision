@@ -11,7 +11,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use DB;
 use Exception;
-
+use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 class PagosController extends Controller
 {
@@ -179,6 +179,125 @@ class PagosController extends Controller
             'enlaceTv' => $enlace_tv,
             'enlaceRadio' => $enlace_radio            
         ]);
+    }
+    
+    /**
+     * create transaction.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function createTransaction(){
+
+        $id_user = Auth::user()->id;
+
+        $calendario_partidos_list = DB::select("
+            select cp.id, cp.id_equipo, upper(e.nombre) as equipo, cp.id_equipo_2, upper(e2.nombre) as equipo_2,
+            upper(e.nombre)||' vs '||upper(e2.nombre) encuentro,
+            cp.precio, to_char(cp.fecha_hora_inicio, 'DD/MM/YYYY HH:MI AM') fecha_hora_inicio,
+            to_char(cp.fecha_hora_fin, 'DD/MM/YYYY HH:MI AM') fecha_hora_fin, pp.id_user,
+            case when pp.id_calendario_partido is not null then true else false end as pago_partido            
+            from public.calendario_partidos cp
+            join equipos e on e.id = cp.id_equipo
+            join equipos e2 on e2.id = cp.id_equipo_2
+            left join public.pagos_partidos pp on pp.id_calendario_partido = cp.id and pp.id_user = :id_user and pp.deleted_at is null
+            join public.tbl_cuenta_paypal tcp on true
+            where cp.deleted_at is null
+            and cp.fecha_hora_inicio::date = (current_date at time zone 'CST')::date  
+	        order by 1 desc 
+        ",[
+            'id_user' => $id_user
+        ]);
+
+        return view('paypal.ticketPartido')
+        ->with("calendario_partidos_list", $calendario_partidos_list);
+}
+    /**
+     * process transaction.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function processTransaction(Request $request){
+
+        $idPartido = $request->idPartido;
+
+        $provider = new PayPalClient;
+        $provider->setApiCredentials(config('paypal'));
+        $paypalToken = $provider->getAccessToken();
+        $response = $provider->createOrder([
+            "intent" => "CAPTURE",
+            "application_context" => [
+                "brand_name" => "GUAYAPE VISION",
+                "return_url" => route('successTransaction', ['idPartido' => $idPartido]),
+                "cancel_url" => route('cancelTransaction'),
+            ],
+            "purchase_units" => [
+                0 => [
+                    "description" => "Apple",
+                    "amount" => [
+                        "currency_code" => "USD",
+                        "value" => "5.00",                        
+                    ],
+                ]
+            ]
+        ]);
+        if (isset($response['id']) && $response['id'] != null) {
+            // redirect to approve href
+            foreach ($response['links'] as $links) {
+                if ($links['rel'] == 'approve') {
+                    return redirect()->away($links['href']);
+                }
+            }
+            return redirect()
+                ->route('createTransaction')
+                ->with('error', 'Algo salio mal.');
+        } else {
+            return redirect()
+                ->route('createTransaction')
+                ->with('error', $response['message'] ?? 'Algo salio mal.');
+        }
+    }
+    /**
+     * success transaction.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function successTransaction(Request $request){
+
+        $idPartido = $request->idPartido;
+        $id_user = Auth::user()->id;
+        $sql_pagos_partidos = null;
+
+        $provider = new PayPalClient;
+        $provider->setApiCredentials(config('paypal'));
+        $provider->getAccessToken();
+        $response = $provider->capturePaymentOrder($request['token']);
+        if (isset($response['status']) && $response['status'] == 'COMPLETED') {
+
+            $sql_pagos_partidos = DB::select("insert into public.pagos_partidos( id_user, id_calendario_partido, created_at)
+            values( :id_user, :id_calendario_partido, (now() at time zone 'CST') )",[
+                'id_user' => $id_user,
+                'id_calendario_partido' => $idPartido
+            ]);
+
+            return redirect()
+                ->route('createTransaction')
+                ->with('success', 'Transaction completa, compra realizada.');
+        } else {
+            return redirect()
+                ->route('createTransaction')
+                ->with('error', $response['message'] ?? 'Algo salio mal.');
+        }
+    }
+    /**
+     * cancel transaction.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cancelTransaction(Request $request)
+    {
+        return redirect()
+            ->route('createTransaction')
+            ->with('error', $response['message'] ?? 'Transacción Cancelada.');
     }
     
 }
