@@ -142,8 +142,8 @@ class EmpleadoController extends Controller
         $segundo_nombre=$request->segundo_nombre;
         $primer_apellido=$request->primer_apellido;
         $segundo_apellido=$request->segundo_apellido;
-        $domicilio=$request->domicilio;
-        $telefono=$request->telefono;        
+        $domicilio=$request->direccion;
+        $telefono=$request->celular;        
         $deleted_at=$request->deleted_at;
         $id_ciudad_procedencia=$request->id_ciudad_procedencia;
         $id_cargo=$request->id_cargo;
@@ -192,7 +192,7 @@ class EmpleadoController extends Controller
                 }
 
                 $sql_per_empleado = DB::select("insert INTO public.per_empleado (
-                telefono,domicilio,identidad,primer_apellido,primer_nombre,segundo_apellido,segundo_nombre
+                celular,direccion,identidad,primer_apellido,primer_nombre,segundo_apellido,segundo_nombre
                 ,correo, id_usuario, created_at, id_ciudad_procedencia) values (
                 :telefono,:domicilio,:identidad,:primer_apellido,:primer_nombre,:segundo_apellido,:segundo_nombre
                 ,:correo,:id_usuario, now() , :id_ciudad_procedencia, :id_cargo)
@@ -209,7 +209,7 @@ class EmpleadoController extends Controller
                     $id=$r->id;
                 }
 
-                $msgSuccess="Registro creado con el código: ".$id;
+                $msgSuccess="Registro creado con el codigo: ".$id;
             }else if( $empleado_existe ==  $empleado_existe_permitido ){
                 $msgError="Registro duplicado, ya existe un empleado!";
             }
@@ -218,7 +218,7 @@ class EmpleadoController extends Controller
             
         }else if($accion==2){
         $sql_per_empleado = DB::select("update public.per_empleado set  updated_at = now(),
-        telefono=:telefono,domicilio=:domicilio,identidad=:identidad,primer_apellido=:primer_apellido,
+        celular=:telefono,direccion=:domicilio,identidad=:identidad,primer_apellido=:primer_apellido,
         primer_nombre=:primer_nombre,segundo_apellido=:segundo_apellido,segundo_nombre=:segundo_nombre,
         correo=:correo, id_ciudad_procedencia=:id_ciudad_procedencia, id_cargo=:id_cargo
         where id=:id
@@ -254,7 +254,7 @@ class EmpleadoController extends Controller
         if($msgError==null){
         $per_empleado_list = DB::select("select * from (
             select pe.id , pe.id_usuario, pe.primer_nombre, pe.segundo_nombre, pe.primer_apellido, pe.segundo_apellido,
-            pe.identidad, pe.telefono, pe.domicilio, pe.correo, pe.id_ciudad_procedencia,  tm.nombre ciudad_procedencia,
+            pe.identidad, pe.celular, pe.direccion, pe.correo, pe.id_ciudad_procedencia,  tm.nombre ciudad_procedencia,
             pe.id_cargo, cce.nombre cargo,
             case when pe.deleted_at is not null then 'Activo' else '' end deleted_at
             from public.per_empleado pe 
