@@ -145,6 +145,24 @@ class EquiposController extends Controller
        ;
        }
        
+       public function ver_tbl_equipos_app($code) {
+           $administrador=collect(\DB::select("select username as admin from users where username=:user",['user'=>$code]))->first();
+           $admin = isset($administrador->admin)?$administrador->admin:null;
+           
+           if(!$admin){
+               throw new Exception("NO HAY ACCESO");
+           }
+           
+        $equipos_list = DB::select("
+        select e.id, e.nombre, e.descripcion from public.equipos e
+           where e.deleted_at is null
+           order by 1 desc 
+       "
+       );
+       return view("configuraciones.equipos_app")->with("equipos_list", $equipos_list)
+       ;
+       }
+       
        public function guardar_tbl_equipos(Request $request) {
        $id=$request->id;
        $nombre=$request->nombre;
@@ -237,6 +255,37 @@ class EquiposController extends Controller
        ;
        }
        
+       
+       
+       public function ver_calendario_partidos_app($code) {
+            $administrador=collect(\DB::select("select username as admin from users where username=:user",['user'=>$code]))->first();
+           $admin = isset($administrador->admin)?$administrador->admin:null;
+           
+           if(!$admin){
+               throw new Exception("NO HAY ACCESO");
+           }
+            
+        $equipo_list = DB::select("select id, nombre from public.equipos where deleted_at is null");
+        $equipo_2_list = DB::select("select id, nombre from public.equipos where deleted_at is null");
+        $calendario_partidos_list = DB::select("
+        select cp.id, cp.id_equipo, e.nombre as equipo, cp.id_equipo_2, e2.nombre as equipo_2,		
+               cp.precio, cp.fecha_hora_inicio, cp.fecha_hora_fin,upper(e.nombre)||' vs '||upper(e2.nombre) encuentro
+               from public.calendario_partidos cp
+               join equipos e on e.id = cp.id_equipo
+               join equipos e2 on e2.id = cp.id_equipo_2
+               where cp.deleted_at is null
+           order by 1 desc 
+       "
+       );
+       return view("configuraciones.calendarioEquipos_app")->with("calendario_partidos_list", $calendario_partidos_list)
+       ->with("equipo_list", $equipo_list)
+       ->with("equipo_2_list", $equipo_2_list)
+       ;
+       }
+       
+       
+       
+       
        public function guardar_calendario_partidos(Request $request) {
        $id=$request->id;
        $id_equipo=$request->id_equipo;
@@ -300,7 +349,7 @@ class EquiposController extends Controller
        if($msgError==null){
         $calendario_partidos_list = DB::select("select * from (
         select cp.id, cp.id_equipo, e.nombre as equipo, cp.id_equipo_2, e2.nombre as equipo_2,		
-               cp.precio, cp.fecha_hora_inicio, cp.fecha_hora_fin
+               cp.precio, cp.fecha_hora_inicio, cp.fecha_hora_fin,upper(e.nombre)||' vs '||upper(e2.nombre) encuentro
                from public.calendario_partidos cp
                join equipos e on e.id = cp.id_equipo
                join equipos e2 on e2.id = cp.id_equipo_2

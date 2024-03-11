@@ -28,6 +28,11 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index']);
 Route::get('/politica-privacidad', [PrimeController::class, 'ver_politica_privacidad']);
 
+Route::get("/configuracion/equipos/app/{code}", [EquiposController::class, "ver_tbl_equipos_app"]);
+Route::post("/configuracion/equipos/guardar/app", [EquiposController::class, "guardar_tbl_equipos"]);
+Route::get("/configuracion/calendario/equipos/app/{code}", [EquiposController::class, "ver_calendario_partidos_app"]);
+Route::post("/configuracion/calendario/equipos/guardar/app", [EquiposController::class, "guardar_calendario_partidos"]);
+
 Auth::routes([
   'register' => false, // Registration Routes...
   'reset' => false, // Password Reset Routes...
