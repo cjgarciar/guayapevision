@@ -226,7 +226,7 @@ $(document).ready(function () {
 			format: 'YYYY-MM-DD HH:mm'
 		},
 	  });
-
+/*
       paypal.Buttons({
         style: {
     layout: 'vertical',
@@ -235,7 +235,7 @@ $(document).ready(function () {
     label:  'paypal'
   },
   }).render('#paypal-button-container');
-
+*/
 
 
 	$('.validatornumber').keypress(function (){
