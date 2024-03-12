@@ -43,7 +43,7 @@
                 <table class="jambo_table table table-hover" id="tbl_calendario_partidos" border=1>
                    <thead >
                       <tr style="color: black; background-color: buttonhighlight; font-size: large    ">
-                         <th scope="col">id</th>
+                        
                          <th scope="col">Encuentro</th>
                        
                          <th scope="col">precio</th>
@@ -55,7 +55,7 @@
                    <tbody>
                       @foreach ($calendario_partidos_list as $row)
                       <tr style="font-size: medium">
-                         <td scope="row">{{$row->id}}</td>
+                        
                          <td scope="row">{{$row->encuentro}}</td>
                        
                          <td scope="row">{{$row->precio}}</td>
@@ -296,12 +296,12 @@ dom: "lfBtipr",
 "responsive": true, "lengthChange": false, "autoWidth": false,
  buttons: [
 	{
-		/*text: "<i class='fas fa-plus'></i> Agregar",
+		text: "<i class='fas fa-plus'></i> Agregar",
 	    className: 'btn btn-block btn-default',  
 		action: function ( e, dt, node, config ) {
 			accion=1;
 			$("#modal_calendario_partidos").modal("show");
-		}*/
+		}
 	}
 ]
 });
@@ -491,7 +491,7 @@ $("#modal_calendario_partidos").modal("hide");
 for(var i = 0; i < data.calendario_partidos_list.length; i++) {
 var row= data.calendario_partidos_list[i];
 var nuevaFilaDT=[
-row.id,row.encuentro,row.precio,row.fecha_hora_inicio
+row.encuentro,row.precio,row.fecha_hora_inicio
  ,'<button class="btn btn-primary" data-toggle="modal" data-target="#modal_calendario_partidos"'+ 
  'data-id="'+row.id+'" '+ 
  'data-id_equipo="'+row.id_equipo+'" '+ 
