@@ -117,7 +117,7 @@ class EquiposController extends Controller
             left join public.pagos_partidos pp on pp.id_calendario_partido = cp.id and pp.id_user = :id_user and pp.deleted_at is null
             join public.tbl_cuenta_paypal tcp on true
             where cp.deleted_at is null
-            and cp.fecha_hora_inicio::date = (current_date at time zone 'CST')::date             
+            and cp.fecha_hora_inicio::date = (now() at time zone 'CST')::date             
             ",
         [
             'id_user'=>$id_user
@@ -315,7 +315,7 @@ class EquiposController extends Controller
        foreach($sql_calendario_partidos as $r){
        $id=$r->id;
        }
-       $msgSuccess="Registro creado con el código: ".$id;
+       $msgSuccess="Registro creado con el codigo: ".$id;
        }else if($accion==2){
        $sql_calendario_partidos = DB::select("update public.calendario_partidos set  updated_at = (now() at time zone 'CST'),
        fecha_hora_fin=:fecha_hora_fin,fecha_hora_inicio=:fecha_hora_inicio,id_equipo=:id_equipo,id_equipo_2=:id_equipo_2,precio=:precio
