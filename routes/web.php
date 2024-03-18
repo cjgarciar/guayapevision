@@ -69,5 +69,7 @@ Route::get('process-transaction/{idPartido}', [PagosController::class, 'processT
 Route::get('success-transaction/{idPartido}', [PagosController::class, 'successTransaction'])->name('successTransaction');
 Route::get('cancel-transaction', [PagosController::class, 'cancelTransaction'])->name('cancelTransaction');
 
+Route::get('/radio/live', [PagosController::class, 'radio_streaming']);
+
 });
 

@@ -299,5 +299,10 @@ class PagosController extends Controller
             ->route('createTransaction')
             ->with('error', $response['message'] ?? 'Transacción Cancelada.');
     }
+
+    public function radio_streaming(){
+
+        return view('paypal.radio');
+    }
     
 }
